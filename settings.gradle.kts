@@ -20,7 +20,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "widgets-gallery"
+rootProject.name = "ios-exp"
 
 include(":androidApp")
 include(":shared")
