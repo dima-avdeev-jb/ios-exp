@@ -3,9 +3,9 @@ import Foundation
 
 class DelegateView: UIView {
 
-    var target: UIGestureRecognizer
+    var target: UIView
 
-    init(_ target: UIGestureRecognizer, _ frame: CGRect) {
+    init(_ target: UIView, _ frame: CGRect) {
         self.target = target
         super.init(frame: frame)
         self.backgroundColor = UIColor.yellow.withAlphaComponent(0.2)
@@ -16,32 +16,56 @@ class DelegateView: UIView {
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let e = event else {
-            return
+        target.callSubviewsRecursive { view in
+            view.touchesBegan(touches, with: event)
+            (view.gestureRecognizers ?? []).forEach { recognizer in
+                if let event {
+                    recognizer.touchesBegan(touches, with: event)
+                }
+            }
         }
-        target.touchesBegan(touches, with: e)
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let e = event else {
-            return
+        target.callSubviewsRecursive { view in
+            view.touchesBegan(touches, with: event)
+            (view.gestureRecognizers ?? []).forEach { recognizer in
+                if let event {
+                    recognizer.touchesMoved(touches, with: event)
+                }
+            }
         }
-        target.touchesMoved(touches, with: e)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let e = event else {
-            return
+        target.callSubviewsRecursive { view in
+            view.touchesBegan(touches, with: event)
+            (view.gestureRecognizers ?? []).forEach { recognizer in
+                if let event {
+                    recognizer.touchesEnded(touches, with: event)
+                }
+            }
         }
-        target.touchesEnded(touches, with: e)
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let e = event else {
-            return
+        target.callSubviewsRecursive { view in
+            view.touchesBegan(touches, with: event)
+            (view.gestureRecognizers ?? []).forEach { recognizer in
+                if let event {
+                    recognizer.touchesCancelled(touches, with: event)
+                }
+            }
         }
-        target.touchesCancelled(touches, with: e)
     }
 
+}
 
+extension UIView {
+    func callSubviewsRecursive(call: (UIView) -> Void) {
+        call(self)
+        self.subviews.forEach { view in
+            view.callSubviewsRecursive(call: call)
+        }
+    }
 }
