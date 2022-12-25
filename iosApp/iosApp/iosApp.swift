@@ -11,11 +11,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         uiViewController.view = {
             let rootView = UIView()
 
-            let uiText = UITextField(frame: CGRect(x: 0, y: 0, width: 200, height: 100))
+            let uiSwitch = UISwitch(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+            let sub = uiSwitch.subviews[0]
+            let recognizers: [UIGestureRecognizer]? = sub.gestureRecognizers
+            let recognizer = recognizers?.first ?? UIGestureRecognizer()
+//            sub.removeGestureRecognizer(recognizer)
+
+            let mySwitch: UIControl = uiSwitch as UIControl
+            let uiText = CustomText(frame: CGRect(x: 0, y: 0, width: 200, height: 100))
             uiText.backgroundColor = UIColor.gray
             uiText.text = "UITextField"
             rootView.addSubview(uiText)
-            rootView.addSubview(DelegateView(uiText, CGRect(x: 0, y: 0, width: 200, height: 100)))
+            rootView.addSubview(mySwitch)
+
+            rootView.addSubview(DelegateView(recognizer, CGRect(x: 0, y: 0, width: 200, height: 100)))
             return rootView
         }()
         window?.rootViewController = uiViewController
@@ -24,18 +33,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-class DelegateView: UIView {
-
-    var target: UIView
-
-    init(_ target: UIView, _ frame: CGRect) {
-        self.target = target
-        super.init(frame: frame)
-        self.backgroundColor = UIColor.yellow.withAlphaComponent(0.2)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-}
