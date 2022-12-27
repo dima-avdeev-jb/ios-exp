@@ -180,7 +180,12 @@ class Renderer: NSObject, MTKViewDelegate {
             MTKTextureLoader.Option.textureUsage: NSNumber(value: MTLTextureUsage.shaderRead.rawValue),
             MTKTextureLoader.Option.textureStorageMode: NSNumber(value: MTLStorageMode.`private`.rawValue)
         ]
-        
+
+        let uiTexture = UISwitch().takeTextureSnapshot(device: device)
+        if let uiTexture {
+            return uiTexture
+        }
+
         return try textureLoader.newTexture(name: textureName,
                                             scaleFactor: 1.0,
                                             bundle: nil,
